@@ -1,0 +1,27 @@
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        required: true
+        type: string
+      dotnet-version:
+        required: true
+        type: string
+      os:
+        required: true
+        type: string
+jobs:
+  triage: 
+    runs-on: ${{ inputs.os }}
+    steps: 
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup DotNet ${{ inputs.dotnet-version }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+    - name: restore dependencies
+      run: dotnet restore ${{ inputs.project-path }}
+    - name: Build
+      run: |
+        dotnet build ${{ inputs.project-path }} -c Release -o
