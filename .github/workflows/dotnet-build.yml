@@ -19,7 +19,14 @@ jobs:
     - name: Setup DotNet 
       uses: actions/setup-dotnet@v4.0.0
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: ${{inputs.dotnet-version}}
+    - name: Cache DotNet
+      uses: actions/cache@v2
+      with:
+        path: ~/.dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('src/**/**.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-dotnet-
     - name: restore dependencies
       run: dotnet restore ${{ inputs.project-path }}
     - name: Build
