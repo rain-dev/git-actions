@@ -39,9 +39,9 @@ jobs:
       run: |
         dotnet build ${{ inputs.project-path }} -c Release
         dotnet pack ${{ inputs.project-path }} -c Release -o ./dist/${{inputs.package-name}} 
-    - name: zip release ${{inputs.package-name}} 
-      uses: actions/zip-release@v1
+    - name: zip artifacts ${{inputs.package-name}} 
+      uses: TheDoctor0/zip-release@0.7.6
       with:
-        format: zip
-        output: ${{inputs.package-name}}.zip
-        files: ./dist/${{inputs.package-name}} 
+        type: zip
+        filename: ${{inputs.package-name}}.zip
+        path: ./dist/${{inputs.package-name}} 
