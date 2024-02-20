@@ -1,0 +1,47 @@
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        required: true
+        type: string
+      dotnet-version:
+        required: true
+        type: string
+      os:
+        required: true
+        type: string
+      beta:
+        type: boolean
+        default: false
+      package-name:
+        type: string
+        required: true
+jobs:
+  beta-publish: 
+    if: ${{inputs.beta}}
+    runs-on: ${{inputs.os}}
+    steps: 
+    - name: Build artifacts
+      run: |
+        dotnet build ${{ inputs.project-path }} -c Release
+        dotnet pack ${{ inputs.project-path }} -c Release -o ./dist/${{ inputs.os }}/${{inputs.package-name}} --version-suffix beta
+    - name: zip release ${{inputs.package-name}} 
+      uses: actions/zip-release@v1
+      with:
+        format: zip
+        output: ${{inputs.package-name}} -${{ inputs.dotnet-version }}.zip
+        files: ./dist/${{ inputs.os }}/${{inputs.package-name}} 
+  release-publish: 
+    if: ${{inputs.beta == false}}
+    runs-on: ${{inputs.os}}
+    steps: 
+    - name: Build artifacts
+      run: |
+        dotnet build ${{ inputs.project-path }} -c Release
+        dotnet pack ${{ inputs.project-path }} -c Release -o ./dist/${{ inputs.os }}/${{inputs.package-name}} 
+    - name: zip release ${{inputs.package-name}} 
+      uses: actions/zip-release@v1
+      with:
+        format: zip
+        output: ${{inputs.package-name}} -${{ inputs.dotnet-version }}.zip
+        files: ./dist/${{ inputs.os }}/${{inputs.package-name}} 
