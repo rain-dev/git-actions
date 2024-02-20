@@ -24,4 +24,4 @@ jobs:
       run: dotnet restore ${{ inputs.project-path }}
     - name: Build
       run: |
-        dotnet build ${{ inputs.project-path }} -c Release -o
+        dotnet build ${{ inputs.project-path }} -c Release
